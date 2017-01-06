@@ -3,6 +3,10 @@ package com.hiro99ma.blogpost.pahomqtttest;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -20,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String serverUri = "tcp://192.168.0.70:1883";
     private static final String clientId = "ExampleAndroidClient";
     private static final String subscriptionTopic = "abc";
+    private static final String publishTopic = "def";
     private static final String TAG = "MainActivity";
     private MqttAndroidClient mqttAndroidClient;
 
@@ -27,6 +32,37 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        EditText edit = (EditText)findViewById(R.id.editPublish);
+        edit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView tv, int actionId, KeyEvent event) {
+                boolean retval = true;
+
+                String publishMessage = tv.getText().toString();
+                try {
+                    if(mqttAndroidClient.isConnected()) {
+                        //publish
+                        MqttMessage message = new MqttMessage();
+                        message.setPayload(publishMessage.getBytes());
+                        mqttAndroidClient.publish(publishTopic, message);
+                        Toast.makeText(MainActivity.this, "published", Toast.LENGTH_SHORT).show();
+
+                        //EditView clear
+                        TextView pubTv = (TextView)findViewById(R.id.textPublish);
+                        pubTv.setText(publishMessage + "\n" + pubTv.getText());
+                        tv.setText("");
+                        retval = false;
+                    } else {
+                        Toast.makeText(MainActivity.this, "not connected", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (MqttException e) {
+                    System.err.println("Error Publishing: " + e.getMessage());
+                    e.printStackTrace();
+                }
+                return retval;
+            }
+        });
 
         mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), serverUri, clientId);
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
