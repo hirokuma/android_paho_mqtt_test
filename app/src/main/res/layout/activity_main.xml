@@ -33,7 +33,8 @@
             android:scrollbarStyle="insideOverlay"
             style="@android:style/Widget.DeviceDefault.Light.ScrollView"
             android:layout_weight="8"
-            android:background="@android:color/holo_green_dark">
+            android:background="@android:color/holo_green_dark"
+            android:fillViewport="true">
 
             <TextView
                 android:layout_width="match_parent"
@@ -48,7 +49,8 @@
             style="@android:style/Widget.DeviceDefault.Light.ScrollView"
             android:scrollbarStyle="insideOverlay"
             android:layout_weight="8"
-            android:background="@android:color/darker_gray">
+            android:background="@android:color/darker_gray"
+            android:fillViewport="true">
 
             <TextView
                 android:layout_width="match_parent"
