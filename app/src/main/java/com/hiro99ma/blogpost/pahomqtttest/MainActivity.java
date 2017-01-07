@@ -21,10 +21,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String serverUri = "tcp://192.168.0.70:1883";
+    private static final String serverUri = "tcp://iot.eclipse.org:1883";
     private static final String clientId = "ExampleAndroidClient";
-    private static final String subscriptionTopic = "abc";
-    private static final String publishTopic = "def";
+    private static final String subscriptionTopic = "hirokuma@github/abc";
+    private static final String publishTopic = "hirokuma@github/def";
     private static final String TAG = "MainActivity";
     private MqttAndroidClient mqttAndroidClient;
 
@@ -140,7 +140,11 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
                     // message Arrived!
-                    Log.d(TAG, "Message: " + topic + " : " + new String(message.getPayload()));
+                    String subscribeMessage = new String(message.getPayload());
+                    Log.d(TAG, "Message: " + topic + " : " + subscribeMessage);
+
+                    TextView tv = (TextView)findViewById(R.id.textSubscribe);
+                    tv.setText(subscribeMessage + "\n" + tv.getText());
                 }
             });
         } catch (MqttException ex) {
